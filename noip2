@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+### BEGIN INIT INFO
+# Provides:          noip2
+# Required-Start:    $remote_fs $network $syslog
+# Required-Stop:     $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: noip DNS dinâmico
+# Description:       noip DNS dinâmico
+### END INIT INFO
+
+# Frequencia: Conforme configuração
+# Autor: Sérgio Abrantes
+# Contato: sergioabrantes@gmail.com
+# Site: https://github.com/sergioabrantesjunior/noip2
+# Licença: GPLv3
+#
+#
+# Histórico:
+#
+#    v1.0.0 2020-05-24, Sérgio Abrantes:
+#       - Versão inicial do script
+#
+
+#########
+# Criar o arquivo abaixo com o conteúdo: 
+# Arquivo = /etc/systemd/system/multi-user.target.wants/noip2.service
+#
+# Conteúdo:
+#
+# [Unit]
+# Description=Firewall para desktop
+#
+# [Service]
+# Type=oneshot
+# ExecStart=/etc/init.d/noip2 start
+# ExecStop=/etc/init.d/noip2 stop
+# ExecReload=/etc/init.d/noip2 restart
+#
+# [Install]
+# WantedBy=multi-user.target
+#
+#
+#
+# Executar o seguinte comando:
+# systemctl enable noip2
+# systemctl start noip2
+#########
+
+binarioNoip=/usr/local/bin/noip2
+
+test -x $binarioNoip || exit 0
+
+case "$1" in
+	start)
+		echo -n "Iniciando noip: "
+		$binarioNoip
+		echo "Iniciado"
+	;;
+	stop)
+		echo -n "Parando noip: "
+		killall $binarioNoip
+		echo "Parado."
+	;;
+
+	restart)
+		echo -n "Reiniando noip: "
+		killall $binarioNoip
+		$binarioNoip
+		echo "Reiniciado"
+	;;
+
+	status)
+		$binarioNoip -S
+	;;
+
+	*)
+	echo "Uso: $0 {start|stop|restart|status}"
+	exit 1
+esac
+exit 0
